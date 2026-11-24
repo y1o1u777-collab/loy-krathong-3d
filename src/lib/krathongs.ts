@@ -3,38 +3,14 @@ import type { Krathong, KrathongDraft } from '../types'
 
 const LOCAL_KEY = 'loy-krathong-3d-local'
 
-const demoKrathongs: Krathong[] = [
-  {
-    id: 'demo-1', sender_name: 'มะลิ', wish_message: 'ขอให้ครอบครัวมีความสุข สุขภาพแข็งแรง และพบเจอแต่สิ่งดี ๆ',
-    base_type: 'banana', flower_type: 'marigold', created_at: new Date(Date.now() - 1000 * 60 * 8).toISOString(),
-  },
-  {
-    id: 'demo-2', sender_name: 'ต้นน้ำ', wish_message: 'ขอให้ทุกความตั้งใจค่อย ๆ เติบโตเป็นความสำเร็จ',
-    base_type: 'lotus', flower_type: 'orchid', created_at: new Date(Date.now() - 1000 * 60 * 18).toISOString(),
-  },
-  {
-    id: 'demo-3', sender_name: 'พิม', wish_message: 'ปล่อยทุกข์ ปล่อยโศก ขอให้ใจเบาสบายเหมือนสายน้ำ',
-    base_type: 'coconut', flower_type: 'gomphrena', created_at: new Date(Date.now() - 1000 * 60 * 31).toISOString(),
-  },
-  {
-    id: 'demo-4', sender_name: 'ภูผา', wish_message: 'ขอให้ปีนี้เป็นปีที่กล้าหาญและใจดีกับตัวเองมากขึ้น',
-    base_type: 'banana', flower_type: 'orchid', created_at: new Date(Date.now() - 1000 * 60 * 42).toISOString(),
-  },
-  {
-    id: 'demo-5', sender_name: 'ข้าวหอม', wish_message: 'ขอให้ความรักและมิตรภาพอยู่รอบตัวเสมอ',
-    base_type: 'lotus', flower_type: 'marigold', created_at: new Date(Date.now() - 1000 * 60 * 57).toISOString(),
-  },
-]
-
 function readLocal(): Krathong[] {
   try {
     const raw = localStorage.getItem(LOCAL_KEY)
     const saved = raw ? (JSON.parse(raw) as Krathong[]) : []
-    return [...saved, ...demoKrathongs]
+    return saved
   } catch {
-    return demoKrathongs
+    return []
   }
-}
 
 export async function fetchKrathongs(): Promise<Krathong[]> {
   if (!isSupabaseConfigured || !supabase) return readLocal()
