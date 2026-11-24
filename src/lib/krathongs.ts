@@ -72,13 +72,33 @@ export async function createKrathong(draft: KrathongDraft): Promise<Krathong> {
   return item
 }
 
-export function subscribeToKrathongs(onInsert: (krathong: Krathong) => void) {
-  if (!isSupabaseConfigured || !supabase) return () => undefined
-  const channel = supabase
+
+export function subscribeToKrathongs(
+  onInsert: (krathong: Krathong) => void
+) {
+  if (!isSupabaseConfigured || !supabase) {
+    return () => undefined;
+  }
+
+  // เก็บ Supabase client ไว้ในตัวแปรที่ไม่เป็น null
+  const client = supabase;
+
+  const channel = client
     .channel('public-krathongs-river')
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'krathongs' }, (payload: { new: Record<string, unknown> }) => {
-      onInsert(payload.new as unknown as Krathong)
-    })
-    .subscribe()
-  return () => { void supabase.removeChannel(channel) }
+    .on(
+      'postgres_changes',
+      {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'krathongs',
+      },
+      (payload: { new: Record<string, unknown> }) => {
+        onInsert(payload.new as unknown as Krathong);
+      }
+    )
+    .subscribe();
+
+  return () => {
+    void client.removeChannel(channel);
+  };
 }
