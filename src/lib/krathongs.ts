@@ -11,7 +11,7 @@ function readLocal(): Krathong[] {
   } catch {
     return []
   }
-
+}
 export async function fetchKrathongs(): Promise<Krathong[]> {
   if (!isSupabaseConfigured || !supabase) return readLocal()
   const { data, error } = await supabase
